@@ -1,4 +1,6 @@
-﻿namespace background_job;
+﻿using Hangfire;
+
+namespace background_job;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
@@ -9,7 +11,19 @@ class Program
 {
     static void Main(string[] args)
     {
-        Test();
+	    const string jobId = "craw-test-rd";
+	    GlobalConfiguration.Configuration
+		    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+		    .UseColouredConsoleLogProvider()
+		    .UseSimpleAssemblyNameTypeSerializer()
+		    .UseRecommendedSerializerSettings()
+		    .UseInMemoryStorage();
+        RecurringJob.AddOrUpdate(jobId, () => Test(), Cron.Hourly);
+        RecurringJob.TriggerJob(jobId);
+	    using (var server = new BackgroundJobServer())
+	    {
+		    Console.ReadLine();
+	    }
     }
     static void Test()
     {
