@@ -26,7 +26,7 @@ class Program
 		    Console.ReadLine();
 	    }
     }
-    static void Test()
+    public static void Test()
     {
         UserCredential credential;
 
