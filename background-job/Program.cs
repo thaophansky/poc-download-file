@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using Hangfire.MemoryStorage;
 
 namespace background_job;
 using Google.Apis.Auth.OAuth2;
@@ -17,7 +18,7 @@ class Program
 		    .UseColouredConsoleLogProvider()
 		    .UseSimpleAssemblyNameTypeSerializer()
 		    .UseRecommendedSerializerSettings()
-		    .UseInMemoryStorage();
+		    .UseMemoryStorage();
         RecurringJob.AddOrUpdate(jobId, () => Test(), Cron.Hourly);
         RecurringJob.TriggerJob(jobId);
 	    using (var server = new BackgroundJobServer())
