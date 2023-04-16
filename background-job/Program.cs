@@ -7,26 +7,33 @@ using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Util.Store;
+using Microsoft.Extensions.Configuration;
 using System.IO;
 class Program
 {
     static void Main(string[] args)
     {
-	    const string jobId = "craw-test-rd";
-	    GlobalConfiguration.Configuration
-		    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-		    .UseColouredConsoleLogProvider()
-		    .UseSimpleAssemblyNameTypeSerializer()
-		    .UseRecommendedSerializerSettings()
-		    .UseMemoryStorage();
-        RecurringJob.AddOrUpdate(jobId, () => Test(), Cron.Hourly);
+        var builder = new ConfigurationBuilder()
+                   .AddJsonFile($"appsettings.json", true, true);
+        var config = builder.Build();
+        var excelFileId = config["HeoConfig:ExcelFileId"];
+        Console.WriteLine(excelFileId);
+       
+        const string jobId = "craw-test-rd";
+        GlobalConfiguration.Configuration
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+            .UseColouredConsoleLogProvider()
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseMemoryStorage();
+        RecurringJob.AddOrUpdate(jobId, () => Test(excelFileId), Cron.Minutely);
         RecurringJob.TriggerJob(jobId);
-	    using (var server = new BackgroundJobServer())
-	    {
-		    Console.ReadLine();
-	    }
+        using (var server = new BackgroundJobServer())
+        {
+            Console.ReadLine();
+        }
     }
-    public static void Test()
+    public static void Test(string excelFileId)
     {
         UserCredential credential;
 
@@ -47,9 +54,8 @@ class Program
             ApplicationName = "background-job",
         });
 
-        var spreadsheetId = "1X2olReH_7pZy29wtne36kI8mpFk4YxJLaJPezMWxPlw";
         var range = "item!A1:P3000";
-        var request = service.Spreadsheets.Values.Get(spreadsheetId, range);
+        var request = service.Spreadsheets.Values.Get(excelFileId, range);
 
         var response = request.Execute();
         var values = response.Values;
