@@ -16,7 +16,7 @@ class Program
         var builder = new ConfigurationBuilder()
                    .AddJsonFile($"appsettings.json", true, true);
         var config = builder.Build();
-        var excelFileId = config["HeoConfig:ExcelFileId"];
+        var excelFileId = config["Item:ExcelFileId"];
         Console.WriteLine(excelFileId);
        
         const string jobId = "craw-test-rd";
@@ -33,6 +33,7 @@ class Program
             Console.ReadLine();
         }
     }
+
     public static void Test(string excelFileId)
     {
         UserCredential credential;
@@ -54,7 +55,7 @@ class Program
             ApplicationName = "background-job",
         });
 
-        var range = "item!A1:P3000";
+        var range = "battle_ranked_reward!A1:T37";
         var request = service.Spreadsheets.Values.Get(excelFileId, range);
 
         var response = request.Execute();
@@ -62,7 +63,15 @@ class Program
 
         if (values != null && values.Count > 0)
         {
-            using (var writer = new StreamWriter("output.csv"))
+            using (var writer = new StreamWriter("/Users/thao.phan/Desktop/meo/rd/origins-auto-generate-test-data/TestDataGen/dataFiles/input/battle_ranked_reward.csv"))
+            {
+                foreach (var row in values)
+                {
+                    writer.WriteLine(string.Join(",", row));
+                }
+            }
+
+            using (var writer = new StreamWriter("battle_ranked_reward.csv"))
             {
                 foreach (var row in values)
                 {

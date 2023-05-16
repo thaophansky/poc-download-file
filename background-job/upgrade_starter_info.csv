@@ -1,0 +1,6 @@
+axie_id,axie_name,class,current_body_stage,next_part_stage,base_hp_stage_0,base_hp_stage_1,eyes_part_class,eyes_part_value,eyes_card_name,eyes_increased_hp
+1,Buba,beast,0,1,350,400,beast,3,Sparky,5
+2,Olek,plant,0,1,350,400,plant,1,Risky Trunk,5
+3,Puffy,aquatic,0,1,350,400,aquatic,1,Baby,5
+16,Ena,plant,0,1,350,400,plant,2,Papi,5
+5,Tripp,beast,0,1,350,400,beast,7,Nut Cracker,5
